@@ -1,5 +1,12 @@
 import { validationResult } from "express-validator";
 import { userRepository } from "../repositories/index.js";
+import { EventEmitter } from "node:events";
+
+const myEvent = new EventEmitter();
+// listen
+myEvent.on("event.register.user", (params) => {
+  console.log(`They talk about: ${JSON.stringify(params)}`);
+});
 
 const login = async (req, res) => {
   const errors = validationResult(req);
@@ -32,10 +39,16 @@ const register = async (req, res) => {
     address,
     email,
   });
+
+  myEvent.emit("event.register.user", { address, email });
   res.status(201).json({
     message: "POST: Register user successfully",
   });
 };
+
+// Event Emitter
+// Khi 1 req, event xay ra
+// Muon thong bao voi func khac de bat Event do va lam viec khac
 
 const getDetailUser = async (req, res) => {
   const { email, password } = req.body;
