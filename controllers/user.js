@@ -1,4 +1,5 @@
 import { validationResult } from "express-validator";
+import { userRepository } from "../repositories/index.js";
 
 const login = async (req, res) => {
   const errors = validationResult(req);
@@ -6,8 +7,12 @@ const login = async (req, res) => {
     return res.status(400).json({ errors: errors.array() });
   }
   const { email, password } = req.body;
+
+  // Call Repositories
+  await userRepository.login({ email, password });
+
   res.status(200).json({
-    message: "POST: login user",
+    message: "POST: login user - from Repositories",
     data: {
       id: 1,
       name: getName(email),
@@ -18,11 +23,30 @@ const login = async (req, res) => {
 };
 
 const register = async (req, res) => {
-  res.send("POST: register user");
+  const { name, email, password, phoneNumber, address } = req.body;
+  // Call Repositories
+  await userRepository.register({
+    name,
+    password,
+    phoneNumber,
+    address,
+    email,
+  });
+  res.status(201).json({
+    message: "POST: Register user successfully",
+  });
 };
 
 const getDetailUser = async (req, res) => {
-  res.send("GET: User by id");
+  const { email, password } = req.body;
+
+  res.status(200).json({
+    message: "GET: User by id",
+    data: {
+      name: getName(email),
+      email: email,
+    },
+  });
 };
 
 const getAllUsers = async (req, res) => {
