@@ -6,7 +6,15 @@ const login = async (req, res) => {
     return res.status(400).json({ errors: errors.array() });
   }
   const { email, password } = req.body;
-  res.send("POST: login user");
+  res.status(200).json({
+    message: "POST: login user",
+    data: {
+      id: 1,
+      name: getName(email),
+      email: email,
+      age: 24,
+    },
+  });
 };
 
 const register = async (req, res) => {
@@ -19,6 +27,10 @@ const getDetailUser = async (req, res) => {
 
 const getAllUsers = async (req, res) => {
   res.send("GET: Get all users");
+};
+
+const getName = (email) => {
+  return email.split("@")[0];
 };
 
 export default {
