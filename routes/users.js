@@ -1,24 +1,17 @@
 import express from "express";
+import { userController, studentController } from "../controllers/index.js";
+import { body } from "express-validator";
+
 const router = express.Router();
 
-router.get("/", (req, res) => {
-  res.send("GET: user");
-});
+router.get("/", userController.getAllUsers);
 
-router.post("/login", (req, res) => {
-  res.send("POST: login user");
-});
-
-router.post("/register", (req, res) => {
-  res.send("POST: register user");
-});
-
-// router.put("/", (req, res) => {
-//     res.send("PUT: user");
-// });
-
-// router.delete("/", (req, res) => {
-//     res.send("DEL: user");
-// });
+router.post(
+  "/login",
+  body("email").isEmail(),
+  body("password").isLength({ min: 5 }),
+  userController.login
+);
+router.post("/register", userController.register);
 
 export default router;
